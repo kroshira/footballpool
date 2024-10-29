@@ -39,7 +39,6 @@ export const TeamsGrid = ({teams, selectedItems, setSelectedItems}: TeamsGridPro
         }
     }
       items={items.filter(item => item !== undefined)}
-      cardsPerRow={[{ cards: 3}]}
       trackBy={"name"}
     />
   )
