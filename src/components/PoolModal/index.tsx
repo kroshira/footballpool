@@ -1,10 +1,11 @@
 import React from "react"
-import { Button, Modal, ModalProps, SpaceBetween, Tiles, TilesProps } from "@cloudscape-design/components"
+import { Button, FlashbarProps, Modal, ModalProps, SpaceBetween, Tiles, TilesProps } from "@cloudscape-design/components"
 
 interface PoolModalProps extends ModalProps {
     week: string
     teams: Record<string, any>
     setVisible: React.Dispatch<React.SetStateAction<boolean>>
+    setNotifications: React.Dispatch<React.SetStateAction<FlashbarProps.MessageDefinition[]>>
 }
 
 export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
@@ -42,7 +43,7 @@ export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
 
       fetchData();
       setLoaded(false); // Reset loaded state
-    }, [week]); // Refetch items when the week changes
+    }, [week, year]); // Refetch items when the week changes
 
     const handleSelectionChange = (index: number, value: string) => {
       setSelectedItems((currentItems) => {

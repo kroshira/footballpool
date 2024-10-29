@@ -4,16 +4,16 @@ import { fetchAdditionalData } from "./common";
 import { TeamsGrid } from "./components/TeamGrid";
 import { PoolModal } from "./components/PoolModal";
 
+
 export default function App() {
   const [toolsOpen, setToolsOpen] = React.useState<boolean>(false)
   const [navOpen, setNavOpen] = React.useState<boolean>(true)
   const [loading, setLoading] = React.useState<boolean>(true)
   const [loadingExtraData, setLoadingExtraData] = React.useState<boolean>(true)
-  const [notifications, _setNotifications] = React.useState<FlashbarProps.MessageDefinition[]>([])
+  const [notifications, setNotifications] = React.useState<FlashbarProps.MessageDefinition[]>([])
   const [showModal, setShowModal] = React.useState<boolean>(false)
   const [selectedWeek, setSelectedWeek] = React.useState<string>("1")
   const [selectedTeam, setSelectedTeam] = React.useState<Record<string, any>[]>([])
-  // setNotifications(currentNotifications => [...currentNotifications, flashbarMessage({header: "test", type: "error", content: "foo", setNotifications: setNotifications})])
 
   const [teams, setTeams] = React.useState<Record<string, any>[]>([]);
   const apiUrls = Array.from({ length: 34 }, (_, i) => `http://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2024/teams/${i + 1}?lang=en&region=us`);
@@ -109,7 +109,13 @@ export default function App() {
         }
       >
         {!loadingExtraData && <TeamsGrid teams={teams} selectedItems={selectedTeam} setSelectedItems={setSelectedTeam}/>}
-        <PoolModal key={selectedWeek} teams={teams} visible={showModal} setVisible={setShowModal} week={selectedWeek}/>
+        <PoolModal
+          key={selectedWeek}
+          teams={teams}
+          visible={showModal}
+          setVisible={setShowModal}
+          week={selectedWeek}
+          setNotifications={setNotifications}/>
         </ContentLayout>
     }
     splitPanel={
