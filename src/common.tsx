@@ -30,3 +30,5 @@ export function convertToHttps(url: string) {
     }
     return url;
   }
+
+  export const range = (start, stop) => [...Array(stop).keys()].slice(start);

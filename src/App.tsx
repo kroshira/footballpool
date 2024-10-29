@@ -1,6 +1,6 @@
 import React from "react";
 import { AppLayout, Container, ContentLayout, Flashbar, FlashbarProps, Header, HelpPanel, KeyValuePairs, Link, SideNavigation, SplitPanel } from "@cloudscape-design/components";
-import { convertToHttps, fetchAdditionalData } from "./common";
+import { convertToHttps, fetchAdditionalData, range } from "./common";
 import { TeamsGrid } from "./components/TeamGrid";
 import { PoolModal } from "./components/PoolModal";
 
@@ -72,7 +72,7 @@ export default function App() {
           }
         }
         items={
-          [1, 2].map(week => (
+          range(1, 19).map(week => (
             {type: "link", text: `Week ${week}`, href: `${week}`}
           ))
         }
