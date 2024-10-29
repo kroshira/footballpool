@@ -19,7 +19,7 @@ export const flashbarMessage = ({header, type, content, setNotifications}: Custo
 }
 
 export const fetchAdditionalData = async (url) => {
-    const response = await fetch(url);
+    const response = await fetch(convertToHttps(url));
     const data = await response.json();
     return data;
   };
