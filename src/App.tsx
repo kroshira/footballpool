@@ -16,7 +16,7 @@ export default function App() {
   const [selectedTeam, setSelectedTeam] = React.useState<Record<string, any>[]>([])
 
   const [teams, setTeams] = React.useState<Record<string, any>[]>([]);
-  const apiUrls = Array.from({ length: 34 }, (_, i) => `http://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2024/teams/${i + 1}?lang=en&region=us`);
+  const apiUrls = Array.from({ length: 34 }, (_, i) => `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2024/teams/${i + 1}?lang=en&region=us`);
   const fetchData = React.useCallback(async () => {
     const responses = await Promise.all(apiUrls.map((url) => fetch(url)));
     const data = await Promise.all(responses.map((response) => response.json()));
