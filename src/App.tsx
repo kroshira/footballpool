@@ -1,6 +1,6 @@
 import React from "react";
-import { AppLayout, Box, CardsProps, Container, ContentLayout, Flashbar, FlashbarProps, Header, HelpPanel, KeyValuePairs, Link, SideNavigation, SpaceBetween, SplitPanel } from "@cloudscape-design/components";
-import { fetchAdditionalData, flashbarMessage } from "./common";
+import { AppLayout, Container, ContentLayout, Flashbar, FlashbarProps, Header, HelpPanel, KeyValuePairs, Link, SideNavigation, SplitPanel } from "@cloudscape-design/components";
+import { fetchAdditionalData } from "./common";
 import { TeamsGrid } from "./components/TeamGrid";
 import { PoolModal } from "./components/PoolModal";
 
@@ -9,7 +9,7 @@ export default function App() {
   const [navOpen, setNavOpen] = React.useState<boolean>(true)
   const [loading, setLoading] = React.useState<boolean>(true)
   const [loadingExtraData, setLoadingExtraData] = React.useState<boolean>(true)
-  const [notifications, setNotifications] = React.useState<FlashbarProps.MessageDefinition[]>([])
+  const [notifications, _setNotifications] = React.useState<FlashbarProps.MessageDefinition[]>([])
   const [showModal, setShowModal] = React.useState<boolean>(false)
   const [selectedWeek, setSelectedWeek] = React.useState<string>("1")
   const [selectedTeam, setSelectedTeam] = React.useState<Record<string, any>[]>([])
@@ -17,17 +17,18 @@ export default function App() {
 
   const [teams, setTeams] = React.useState<Record<string, any>[]>([]);
   const apiUrls = Array.from({ length: 34 }, (_, i) => `http://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2024/teams/${i + 1}?lang=en&region=us`);
-  const fetchData = async () => {
-    const responses = await Promise.all(apiUrls.map(url => fetch(url)));
-    const data = await Promise.all(responses.map(response => response.json()));
-    setTeams(data)
-    setLoading(false)
-  }
+  const fetchData = React.useCallback(async () => {
+    const responses = await Promise.all(apiUrls.map((url) => fetch(url)));
+    const data = await Promise.all(responses.map((response) => response.json()));
+    setTeams(data);
+    setLoading(false);
+  }, [apiUrls]); // Include any external dependencies (in this case, apiUrls) in the dependency array
+  
   React.useEffect(() => {
     if (loading) {
       fetchData();
     }
-  }, [loading]);
+  }, [loading, fetchData]);
   
   React.useEffect(() => {
     if (loadingExtraData && !loading) {
@@ -57,7 +58,7 @@ export default function App() {
       };
       fetchExtraData();
     }
-  }, [loading, teams]);
+  }, [loading, teams, loadingExtraData]);
 
   return (
     <AppLayout
