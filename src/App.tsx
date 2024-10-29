@@ -1,6 +1,6 @@
 import React from "react";
 import { AppLayout, Container, ContentLayout, Flashbar, FlashbarProps, Header, HelpPanel, KeyValuePairs, Link, SideNavigation, SplitPanel } from "@cloudscape-design/components";
-import { fetchAdditionalData } from "./common";
+import { convertToHttps, fetchAdditionalData } from "./common";
 import { TeamsGrid } from "./components/TeamGrid";
 import { PoolModal } from "./components/PoolModal";
 
@@ -18,7 +18,7 @@ export default function App() {
   const [teams, setTeams] = React.useState<Record<string, any>[]>([]);
   const apiUrls = Array.from({ length: 34 }, (_, i) => `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2024/teams/${i + 1}?lang=en&region=us`);
   const fetchData = React.useCallback(async () => {
-    const responses = await Promise.all(apiUrls.map((url) => fetch(url)));
+    const responses = await Promise.all(apiUrls.map((url) => fetch(convertToHttps(url))));
     const data = await Promise.all(responses.map((response) => response.json()));
     setTeams(data);
     setLoading(false);

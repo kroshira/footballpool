@@ -23,3 +23,10 @@ export const fetchAdditionalData = async (url) => {
     const data = await response.json();
     return data;
   };
+
+export function convertToHttps(url: string) {
+    if (url.startsWith("http://")) {
+      return url.replace("http://", "https://");
+    }
+    return url;
+  }
