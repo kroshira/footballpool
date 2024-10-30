@@ -1,5 +1,5 @@
 import React from "react";
-import { AppLayout, Container, ContentLayout, Flashbar, FlashbarProps, Header, HelpPanel, KeyValuePairs, Link, SideNavigation, SplitPanel } from "@cloudscape-design/components";
+import { AppLayout, Container, ContentLayout, Flashbar, FlashbarProps, Header, HelpPanel, KeyValuePairs, Link, SideNavigation, SpaceBetween, SplitPanel } from "@cloudscape-design/components";
 import { convertToHttps, fetchAdditionalData, range } from "./common";
 import { TeamsGrid } from "./components/TeamGrid";
 import { PoolModal } from "./components/PoolModal";
@@ -13,7 +13,7 @@ export default function App() {
   const [notifications, setNotifications] = React.useState<FlashbarProps.MessageDefinition[]>([])
   const [showModal, setShowModal] = React.useState<boolean>(false)
   const [selectedWeek, setSelectedWeek] = React.useState<string>("1")
-  const [selectedTeam, setSelectedTeam] = React.useState<Record<string, any>[]>([])
+  const [selectedTeams, setSelectedTeams] = React.useState<Record<string, any>[]>([])
 
   const [teams, setTeams] = React.useState<Record<string, any>[]>([]);
   const apiUrls = Array.from({ length: 34 }, (_, i) => `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2024/teams/${i + 1}?lang=en&region=us`);
@@ -108,7 +108,7 @@ export default function App() {
           </Header>
         }
       >
-        {!loadingExtraData && <TeamsGrid teams={teams} selectedItems={selectedTeam} setSelectedItems={setSelectedTeam}/>}
+        {!loadingExtraData && <TeamsGrid teams={teams} selectedItems={selectedTeams} setSelectedItems={setSelectedTeams}/>}
         <PoolModal
           key={selectedWeek}
           teams={teams}
@@ -120,20 +120,33 @@ export default function App() {
     }
     splitPanel={
       <SplitPanel header="Team Stats" hidePreferencesButton={true}>
-        {selectedTeam.length > 0 && selectedTeam[0].teamInfo.recordData.items.map(recordType => {
+        <SpaceBetween direction="horizontal" size="s">
+        {selectedTeams.length > 0 && 
+        
+        selectedTeams.map(team => {
+        
+        return (
+          <Container header={<Header>{team.name}</Header>}>
+            {
+          team.teamInfo.recordData.items.map(recordType => {
           return (
-            <Container key={`selectedTeam[0].name-${recordType.name}`}
+            <Container key={`${team.name}-${recordType.name}`}
             header={<Header>{recordType.name}</Header>}>
-              <KeyValuePairs key={selectedTeam[0].displayName} columns={5}
+              <KeyValuePairs key={team.displayName}
               items={recordType.stats.map(record => (
                 {
                   label: record.displayName,
                   value: record.value
                 }
             ))}/>
+            
           </Container>
-        )
+        )})}
+        </Container>
+      )
+
         })}
+        </SpaceBetween>
       </SplitPanel>
     }
     />

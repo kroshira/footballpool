@@ -19,7 +19,7 @@ export const TeamsGrid = ({teams, selectedItems, setSelectedItems}: TeamsGridPro
   return (
     <Cards
     selectedItems={selectedItems}
-    selectionType="single"
+    selectionType="multi"
     onSelectionChange={({detail}) => {setSelectedItems(detail?.selectedItems)
     }}
       cardDefinition={
