@@ -25,6 +25,7 @@ export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
           event.competitions[0].competitors.map((competitor) => ({
             label: competitor.team.displayName,
             value: competitor.team.shortDisplayName,
+            description: `${competitor.homeAway} team`,
             image: (
               <img
                 src={competitor.team.logo}
@@ -58,7 +59,7 @@ export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
         <SpaceBetween direction="vertical" size="s">
           {loaded &&
             items.map((game, index) => (
-              <Container>
+              <Container key={`game-${index}-week-${week}-container`}>
               <Tiles
                 key={`game-${index}-week-${week}`}
                 columns={2}
