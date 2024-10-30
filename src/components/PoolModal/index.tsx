@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, FlashbarProps, Modal, ModalProps, SpaceBetween, Tiles, TilesProps } from "@cloudscape-design/components"
+import { Button, Container, FlashbarProps, Modal, ModalProps, SpaceBetween, Tiles, TilesProps } from "@cloudscape-design/components"
 
 interface PoolModalProps extends ModalProps {
     week: string
@@ -29,8 +29,8 @@ export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
               <img
                 src={competitor.team.logo}
                 alt={competitor.team.shortDisplayName}
-                width={100}
-                height={100}
+                width={50}
+                height={50}
               />
             ),
           }))
@@ -58,13 +58,16 @@ export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
         <SpaceBetween direction="vertical" size="s">
           {loaded &&
             items.map((game, index) => (
+              <Container>
               <Tiles
                 key={`game-${index}-week-${week}`}
                 columns={2}
                 onChange={({ detail }) => handleSelectionChange(index, detail.value)}
                 value={selectedItems[index]}
                 items={game}
+
               />
+              </Container>
             ))}
             <Button
                 variant="primary"
