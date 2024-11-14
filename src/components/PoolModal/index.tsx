@@ -8,11 +8,22 @@ interface PoolModalProps extends ModalProps {
     setNotifications: React.Dispatch<React.SetStateAction<FlashbarProps.MessageDefinition[]>>
 }
 
-export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
+export const PoolModal = ({ week, teams, visible, setVisible }: PoolModalProps) => {
     const year = new Date().getFullYear();
     const [loaded, setLoaded] = React.useState(false);
     const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
     const [items, setItems] = React.useState<TilesProps.TilesDefinition[][]>([]);
+
+    const teamsDict: Record<string, any> = {}
+    teams.map(team => (
+      teamsDict[team.name] = team
+    ))
+
+    const url = URL.createObjectURL(
+      new Blob(
+        [JSON.stringify({"Falcons": teamsDict.Falcons})], {type: 'application/json'}
+      )
+    )
 
     React.useEffect(() => {
       const fetchData = async () => {
@@ -22,7 +33,13 @@ export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
         const data = await response.json();
 
         const fetchedItems = data.events.map((event) =>
-          event.competitions[0].competitors.map((competitor) => ({
+          
+          // const commonOpponents = {}
+          event.competitions[0].competitors.map((competitor) => {
+            // teamsDict[competitor.team.name].eventData.map(
+              
+            // )
+            return {
             label: competitor.team.displayName,
             value: competitor.team.shortDisplayName,
             description: `${competitor.homeAway} team`,
@@ -34,8 +51,8 @@ export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
                 height={50}
               />
             ),
-          }))
-        );
+          }})
+      );
 
         setItems(fetchedItems);
         setSelectedItems(new Array(fetchedItems.length).fill("")); // Initialize selectedItems with empty strings
@@ -72,6 +89,8 @@ export const PoolModal = ({ week, visible, setVisible }: PoolModalProps) => {
             ))}
             <Button
                 variant="primary"
+                download={'team_data.json'}
+                href={url}
                 >Submit</Button>
         </SpaceBetween>
       </Modal>

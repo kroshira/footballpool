@@ -1,8 +1,9 @@
 import React from "react";
-import { AppLayout, Container, ContentLayout, Flashbar, FlashbarProps, Header, HelpPanel, KeyValuePairs, Link, SideNavigation, SpaceBetween, SplitPanel } from "@cloudscape-design/components";
+import { AppLayout, Button, Container, ContentLayout, Flashbar, FlashbarProps, Header, HelpPanel, KeyValuePairs, Link, SideNavigation, SpaceBetween, SplitPanel } from "@cloudscape-design/components";
 import { convertToHttps, fetchAdditionalData, range } from "./common";
 import { TeamsGrid } from "./components/TeamGrid";
 import { PoolModal } from "./components/PoolModal";
+import { LeagueStatsModal } from "./components/LeagueStatsModal";
 
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
   const [loadingExtraData, setLoadingExtraData] = React.useState<boolean>(true)
   const [notifications, setNotifications] = React.useState<FlashbarProps.MessageDefinition[]>([])
   const [showModal, setShowModal] = React.useState<boolean>(false)
+  const [showLeagueStatsModal, setShowLeagueStatsModal] = React.useState<boolean>(false)
   const [selectedWeek, setSelectedWeek] = React.useState<string>("1")
   const [selectedTeams, setSelectedTeams] = React.useState<Record<string, any>[]>([])
 
@@ -22,7 +24,7 @@ export default function App() {
     const data = await Promise.all(responses.map((response) => response.json()));
     setTeams(data);
     setLoading(false);
-  }, [apiUrls]); // Include any external dependencies (in this case, apiUrls) in the dependency array
+  }, [apiUrls]);
   
   React.useEffect(() => {
     if (loading) {
@@ -37,6 +39,7 @@ export default function App() {
           teams.map(async (team) => {
             let recordData = null;
             let eventData = [];
+            let statsData = null;
             if (team.record && team.record.$ref) {
               recordData = await fetchAdditionalData(team.record.$ref);
             }
@@ -50,7 +53,10 @@ export default function App() {
                 );
               }
             }
-            return { ...team, recordData, eventData};
+            if (team.statistics && team.statistics.$ref) {
+              statsData = await fetchAdditionalData(team.statistics.$ref)
+            }
+            return { ...team, recordData, eventData, statsData};
           })
         );
         setTeams(teamsWithExtraData);
@@ -103,7 +109,15 @@ export default function App() {
     content={
       <ContentLayout
         header={
-          <Header variant="h1" info={<Link variant="info">Info</Link>}>
+          <Header
+            variant="h1"
+            info={<Link variant="info">Info</Link>}
+            actions={
+              <Button variant="primary" onClick={() => 
+                setShowLeagueStatsModal(currentState => (!currentState))
+              }>League Stats</Button>
+            }
+            >
             League Overview
           </Header>
         }
@@ -116,6 +130,11 @@ export default function App() {
           setVisible={setShowModal}
           week={selectedWeek}
           setNotifications={setNotifications}/>
+        {!loadingExtraData && <LeagueStatsModal
+            teams={teams}
+            visible={showLeagueStatsModal}
+            setVisible={setShowLeagueStatsModal}
+          />}
         </ContentLayout>
     }
     splitPanel={
@@ -126,7 +145,7 @@ export default function App() {
         selectedTeams.map(team => {
         
         return (
-          <Container header={<Header>{team.name}</Header>}>
+          <Container key={team.name} header={<Header>{team.name}</Header>}>
             {
           team.teamInfo.recordData.items.map(recordType => {
           return (
