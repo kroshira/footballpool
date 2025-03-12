@@ -9,7 +9,8 @@ interface PoolModalProps extends ModalProps {
 }
 
 export const PoolModal = ({ week, teams, visible, setVisible }: PoolModalProps) => {
-    const year = new Date().getFullYear();
+    const date = new Date()
+    const year = date.getMonth() < 3 ? date.getFullYear() - 1 :date.getFullYear()
     const [loaded, setLoaded] = React.useState(false);
     const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
     const [items, setItems] = React.useState<TilesProps.TilesDefinition[][]>([]);
